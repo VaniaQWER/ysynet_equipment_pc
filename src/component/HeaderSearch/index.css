@@ -1,0 +1,34 @@
+.headerSearch .anticon-search {
+    cursor: pointer;
+    font-size: 16px;
+
+}  
+.headerSearch .input {
+    transition: width .3s, margin-left .3s;
+    width: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+
+.headerSearch .input .ant-select-selection {
+    background: transparent;
+}
+.headerSearch .show  input {
+    border: 0;
+    padding-left: 0;
+    padding-right: 0;
+    -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+}
+
+.headerSearch .show input :hover,
+.headerSearch .show  input :focus {
+    border-bottom: 1px solid #d9d9d9;
+}
+.headerSearch .show {
+    width: 150px;
+    margin-left: 8px;
+}
+
+
