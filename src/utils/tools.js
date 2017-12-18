@@ -3,10 +3,11 @@
  * @desc 常用工具类
  * @author Vania
  */
-import { message } from 'antd';
+import React from 'react';
+import { message, Select } from 'antd';
 import { hashHistory } from 'react-router';
-
-const _remote = 'http://120.26.128.15:8903';
+const Option = Select.Option;
+const _remote = `http://192.168.0.112:80`;
 
  /**
   * @summary 原生fetch方法改造,常规获取json格式数据
@@ -63,6 +64,18 @@ const _remote = 'http://120.26.128.15:8903';
       })
     }
   }
+
+/**
+ * 创建下拉框option
+ * @param {*} data 
+ */
+export const createOptions = (data) => {
+  let options = [];
+  for (let key in data) {
+    options.push(<Option key={key} value={key}>{ data[key] }</Option>)
+  }
+  return options;
+}  
 
 // const ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
 // const 

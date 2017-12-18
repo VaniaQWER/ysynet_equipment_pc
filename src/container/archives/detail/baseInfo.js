@@ -1,11 +1,44 @@
 import React, { Component } from 'react';
 import { Row, Col, Carousel } from 'antd';
+import { ArchivesStatus, DepreciationType } from '../../../constants';
 import './style.css';
 /**
  * @file 基础信息
  */
 class BaseInfo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      baseInfo: {
+        assetsRecord: '',//资产编号
+        equipmetStandarName: '',//资产名称
+        useFstate: '',//状态
+        productType: '',//资产分类
+        certGuid: '',//证件号
+        product: '',//生产商
+        deposit: '',//存放科室
+        bDept: '',//管理科室
+        custodian: '',//责任人
+        installPrice: '',//安装费
+        sourceFunds: '',//经费来源
+        productionDate: '',//出厂日期
+        enableDate: '',//启用日期
+        recodrDate: '',//建档日期
+        acctDate: '',//入账日期
+        useLimit: '',//使用年限
+        depreciationLimit: '',//折旧年限
+        depreciationType: '',//折旧方法
+        residualValue: '',//残值
+        qalevel: '',//质量等级
+        maintainDay: '',//包含该周期
+      }
+    }
+  }
+  componentDidMount() {
+    // Mock
+  }
   render () {
+    const { baseInfo } = this.props;
     return (
       <div>
         <Carousel>
@@ -16,61 +49,61 @@ class BaseInfo extends Component {
         </Carousel>
         <Row type="flex" style={{marginTop: 16}} className='table-row'>
           <Col span={4} className='table-span'>资产编号</Col>
-          <Col span={8} className='table-span'>123456789012345678</Col>
+          <Col span={8} className='table-span'> { baseInfo.assetsRecord } </Col>
           <Col span={4} className='table-span'>资产名称</Col>
-          <Col span={8} className='table-span'>三氧消毒机</Col>
+          <Col span={8} className='table-span'>{ baseInfo.equipmetStandarName }</Col>
           <Col span={4} className='table-span'>状态</Col>
-          <Col span={8} className='table-span'>正常使用</Col>
+          <Col span={8} className='table-span'>{ baseInfo.useFstate }</Col>
           <Col span={4} className='table-span'>资产分类</Col>
-          <Col span={8} className='table-span'>医疗设备</Col>
+          <Col span={8} className='table-span'>{ ArchivesStatus[baseInfo.productType] }</Col>
           <Col span={4} className='table-span'>证件号</Col>
-          <Col span={8} className='table-span'>国食药监械(准)字2016第1234567号</Col>
+          <Col span={8} className='table-span'>{ baseInfo.certGuid }</Col>
           <Col span={4} className='table-span'>生产商</Col>
-          <Col span={8} className='table-span'>成都肯格王电子</Col>
+          <Col span={8} className='table-span'>{ baseInfo.product }</Col>
           <Col span={4} className='table-span'>使用科室</Col>
-          <Col span={8} className='table-span'>口腔科门诊1</Col>
+          <Col span={8} className='table-span'>{ baseInfo.useDeptCode }</Col>
           <Col span={4} className='table-span'>存放地址</Col>
-          <Col span={8} className='table-span'>门诊大楼-1楼-口腔科1</Col>
+          <Col span={8} className='table-span'>{ baseInfo.deposit }</Col>
           <Col span={4} className='table-span'>管理科室</Col>
-          <Col span={8} className='table-span'>设备科</Col>
+          <Col span={8} className='table-span'>{ baseInfo.bDept }</Col>
           <Col span={4} className='table-span'>责任人</Col>
-          <Col span={8} className='table-span'>张三</Col>
+          <Col span={8} className='table-span'>{ baseInfo.custodian }</Col>
           <Col span={4} className='table-span'>购置金额</Col>
-          <Col span={8} className='table-span'>1024.00</Col>
+          <Col span={8} className='table-span'>{ baseInfo.buyPrice }</Col>
           <Col span={4} className='table-span'>安装费</Col>
-          <Col span={8} className='table-span'>100.00</Col>
+          <Col span={8} className='table-span'>{ baseInfo.installPrice }</Col>
           <Col span={4} className='table-span'>经费来源</Col>
-          <Col span={8} className='table-span'></Col>
-          <Col span={4} className='table-span'>供应商</Col>
-          <Col span={8} className='table-span'>成都肯格王电子</Col>
+          <Col span={8} className='table-span'>{ baseInfo.sourceFunds }</Col>
           <Col span={4} className='table-span'>出厂日期</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.productionDate }</Col>
           <Col span={4} className='table-span'>启用日期</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.enableDate }</Col>
           <Col span={4} className='table-span'>建档日期</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.recodrDate }</Col>
           <Col span={4} className='table-span'>入账日期</Col>
-          <Col span={8} className='table-span'>2012.12.12</Col>
+          <Col span={8} className='table-span'>{ baseInfo.acctDate }</Col>
           <Col span={4} className='table-span'>使用年限</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.useLimit }</Col>
           <Col span={4} className='table-span'>折旧年限</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.depreciationLimit }</Col>
           <Col span={4} className='table-span'>折旧方法</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ DepreciationType[baseInfo.depreciationType] }</Col>
           <Col span={4} className='table-span'>残值</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.residualValue }</Col>
           <Col span={4} className='table-span'>质量等级</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.qalevel }</Col>
           <Col span={4} className='table-span'>保养周期-天</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.maintainDay }</Col>
           <Col span={4} className='table-span'>维修商</Col>
-          <Col span={8} className='table-span'>武汉XXXX医疗器械有限公司</Col>
+          <Col span={8} className='table-span'>{ baseInfo.outAaOrg }</Col>
           <Col span={4} className='table-span'>维修标识</Col>
-          <Col span={8} className='table-span'></Col>
+          <Col span={8} className='table-span'>{ baseInfo.repairFlag }</Col>
           <Col span={4} className='table-span'>维修联系人</Col>
-          <Col span={8} className='table-span'>王小二</Col>
+          <Col span={8} className='table-span'>{ baseInfo.outRrpairUserName }</Col>
           <Col span={4} className='table-span'>维修联系方式</Col>
-          <Col span={8} className='table-span'>18666666666</Col>
+          <Col span={8} className='table-span'>{ baseInfo.outRrpairPhone }</Col>
+          <Col span={4} className='table-span'></Col>
+          <Col span={8} className='table-span'></Col>
         </Row>
       </div>  
     )

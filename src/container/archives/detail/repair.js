@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { Form, Row, Col, Input, Table, Icon, Button } from 'antd';
-import { RepairData } from '../../../mock';
+import { Form, Row, Col, Input, Icon, Button, Select } from 'antd';
+// import { RepairData } from '../../../mock';
+import TableGrid from '../../../component/tableGrid';
 import { Link } from 'react-router';
+import api from '../../../api';
+import { UrgentFlag, OrderFstate, RrpairType } from '../../../constants';
+import { createOptions } from '../../../utils/tools'
+const Option = Select.Option;
 const FormItem = Form.Item;
+const { RemoteTable } = TableGrid;
 /**
  * @file 维修记录
  */
@@ -11,7 +17,7 @@ const FormItem = Form.Item;
   handleSearch = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log('Received values of form: ', values);
+      this.props.onSearch(values);
     });
   }
    render () {
@@ -19,19 +25,27 @@ const FormItem = Form.Item;
      return (
         <Form
           className="ant-advanced-search-form"
+          onSubmit={this.onSearch}
         >
         <Row gutter={24} style={{padding: 10}}>
           <Col span={6} key={1} >
             <FormItem label={`维修单号`}>
-              {getFieldDecorator(`a`)(
+              {getFieldDecorator(`rrpairOrder`)(
                 <Input placeholder="维修单号"/>
               )}
             </FormItem>
           </Col>
           <Col span={6} key={2} >
             <FormItem label={`状态`}>
-              {getFieldDecorator(`b`)(
-                <Input placeholder="状态"/>
+              {getFieldDecorator(`assersRecord`, {
+                initialValue: ''
+              })(
+                <Select style={{ width: 170 }}>
+                  <Option value="">全部</Option>
+                  {
+                    createOptions(OrderFstate)
+                  }
+                </Select>  
               )}
             </FormItem>
           </Col>
@@ -45,70 +59,78 @@ const FormItem = Form.Item;
  }
 const RepairRecordWrapper = Form.create()(RepairRecordForm);
 class RepairRecord extends Component {
+  onSearch = (params) => {
+    this.refs.remote.fetch(params);
+  }
   render () {
-    const backurl = this.props.backurl;
+    const { backurl } = this.props;
+    const record = this.props.params.record;
     const columns = [
       {
         title: '操作',
         dataIndex: 'id',
         width: 100,
-        render: text => <Link to={{pathname: `${backurl}/${text}`}}><Icon type="form" />详情</Link>
+        render: (text, item) => 
+          <Link to={{pathname: `${backurl}/repair`, state: {params: item, record: record}}}>
+            <Icon type="form" />
+            详情
+          </Link>
       }, {
         title: '维修单号',
-        dataIndex: 'id1',
+        dataIndex: 'rrpairOrder',
         width: 200
       },{
         title: '状态',
-        dataIndex: 'id2',
-        width: 100
-      },{
-        title: '维修结果',
-        dataIndex: 'id3',
-        width: 100
+        dataIndex: 'assersRecord',
+        width: 100,
+        render: text => OrderFstate[text]
       },{
         title: '紧急度',
-        dataIndex: 'id4',
-        width: 100
+        dataIndex: 'urgentFlag',
+        width: 100,
+        render: text => UrgentFlag[text]
       },{
         title: '申报人',
-        dataIndex: 'id5',
+        dataIndex: 'rrpairUserName',
         width: 100
       },{
         title: '维修人',
-        dataIndex: 'id6',
+        dataIndex: 'maintainUserName',
         width: 100
       },{
         title: '维修性质',
-        dataIndex: 'id7',
+        dataIndex: 'orderType',
         width: 100
       },{
         title: '维修类型',
-        dataIndex: 'id8',
-        width: 100
+        dataIndex: 'rrpairType',
+        width: 100,
+        render: text => RrpairType[text]
       },{
         title: '期望完成时间',
-        dataIndex: 'id9',
+        dataIndex: 'completTime',
         width: 200
       },{
         title: '最后更新时间',
-        dataIndex: 'id10',
+        dataIndex: 'modifyTime',
         width: 200
       },
     ]
     return (
       <div>
-        <RepairRecordWrapper/>
-        <Table 
-          bordered={true}
-          style={{marginTop: 10}}
+        <RepairRecordWrapper onSearch={this.onSearch}/>
+        <RemoteTable
+          ref='remote'
+          url={api.REPAIR}
           scroll={{x: '1800px'}}
-          columns={columns} 
-          dataSource={RepairData} 
-          rowKey={'id'}
-        />
+          columns={columns}
+          rowKey={'rrpairOrder'}
+          style={{marginTop: 10}}
+        /> 
       </div>
     )
   }
 }
 
 export default RepairRecord;
+// query={{...this.props.params}}

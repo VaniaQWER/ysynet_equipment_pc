@@ -12,25 +12,25 @@ const Panel = Collapse.Panel;
 
 class RepairDetail extends Component {
   render () {
-    const { params } = this.props;
+    const { params, record } = this.props.location.state;
     return (
       <Content style={{ margin: '0 16px' }}>
         <Breadcrumb style={{ margin: '16px 0' }}>
           <Breadcrumb.Item>主页</Breadcrumb.Item>
           <Breadcrumb.Item><Link to='/archives'>资产档案</Link></Breadcrumb.Item>
-          <Breadcrumb.Item><Link to={`/archives/${params.archivesId}`}>资产档案详情</Link></Breadcrumb.Item>
+          <Breadcrumb.Item><a onClick={() => window.history.go(-1)}>资产档案详情</a></Breadcrumb.Item>
           <Breadcrumb.Item>维修详情</Breadcrumb.Item>
         </Breadcrumb>
         <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
           <Collapse defaultActiveKey={['1']} >
             <Panel header="资产信息" key="1">
-              <ArchivesInfo/>
+              <ArchivesInfo archivesInfo={record}/>
             </Panel>
             <Panel header="工单信息" key="2">
-              <WorkorderInfo/>
+              <WorkorderInfo workorderInfo={params}/>
             </Panel>
             <Panel header="维修信息" key="3">
-              <RepairInfo/>
+              <RepairInfo repairInfo={params}/>
             </Panel>
           </Collapse>
         </div>

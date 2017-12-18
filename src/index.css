@@ -63,3 +63,7 @@
   background: #fff;
   min-height: 360px;
 }
+
+.ysynet-archives-modal {
+  width: 80% !important;
+}

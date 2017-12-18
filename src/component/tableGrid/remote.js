@@ -74,6 +74,7 @@ class RemoteTable extends Component {
             rowSelection, scroll, footer } = this.props;      
     return (
       <Table 
+        style={this.props.style}
         columns={columns}
         rowKey={rowKey}
         size={this.props.size || 'normal'}

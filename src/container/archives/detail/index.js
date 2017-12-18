@@ -11,7 +11,7 @@ const { Content } = Layout;
  */
 class ArchivesDetail extends Component {
   render () {
-    console.log(this.props)
+    const { record } = this.props.location.state;
     return this.props.children || (
       <Content style={{ margin: '0 16px' }}>
         <Breadcrumb style={{ margin: '16px 0' }}>
@@ -22,13 +22,16 @@ class ArchivesDetail extends Component {
         <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
           <Tabs defaultActiveKey="1">
             <TabPane tab="基本信息" key="1">
-              <BaseInfo/>
+              <BaseInfo baseInfo={record}/>
             </TabPane>
             <TabPane tab="证件信息" key="2">
               <Certificates/>
             </TabPane>
             <TabPane tab="维修记录" key="3">
-              <RepairRecord backurl={this.props.location.pathname}/>
+              <RepairRecord 
+                backurl={this.props.location.pathname} 
+                params={{assetsRecord: record.assetsRecord, record: record}}
+              />
             </TabPane>
           </Tabs>
         </div>

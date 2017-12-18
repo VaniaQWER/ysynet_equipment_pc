@@ -2,86 +2,21 @@
  * @file 资产档案
  */
 import React, { Component } from 'react';
-import { Row, Col, Input, Form, Table, Button,
+import { Row, Col, Input, Form, Button, Select, Modal,
   Icon, Breadcrumb, Layout, Divider } from 'antd';
-import { ArchivesData } from '../../mock';
 import { Link } from 'react-router';
-// import TableGrid from '../../component/tableGrid';
-// import api from '../../api';
+import TableGrid from '../../component/tableGrid';
+import SearchSelect from '../../component/searchSelect';
+import api from '../../api';
+import { ArchivesStatus, ProductType } from '../../constants';
+import { createOptions } from '../../utils/tools';
+import Certificates from './detail/certificates';
+import { fetchData } from '../../utils/tools';
 const FormItem = Form.Item;
-// const { RemoteTable } = TableGrid;
+const Option = Select.Option;
+const { RemoteTable } = TableGrid;
+const { RemoteSelect } = SearchSelect;
 const { Content } = Layout;
-const columns = [
-  {
-    title: '操作',
-    dataIndex: 'id',
-    width: 250,
-    render: text => 
-      <span>
-        <Link to={{pathname: `/archives/${text}`}}><Icon type="form" />详情</Link>
-        <Divider type="vertical" />
-        <a onClick={() => alert('选证件')}><Icon type="idcard" />证件</a>
-        <Divider type="vertical" />
-        <a onClick={() => alert('大妈')}><Icon type="qrcode" />打码</a>
-      </span>  
-  },
-  {
-    title: '资产编号',
-    dataIndex: 'id1',
-    width: 200
-  },
-  {
-    title: '资产名称',
-    dataIndex: 'id2',
-    width: 200
-  },
-  {
-    title: '型号',
-    dataIndex: 'id3',
-    width: 200
-  },
-  {
-    title: '状态',
-    dataIndex: 'id4',
-    width: 150
-  },
-  {
-    title: '设备分类',
-    dataIndex: 'id5',
-    width: 150
-  },
-  {
-    title: '使用科室',
-    dataIndex: 'id6',
-    width: 150
-  },
-  {
-    title: '购置日期',
-    dataIndex: 'id7',
-    width: 150
-  },
-  {
-    title: '供应商',
-    dataIndex: 'id8',
-    width: 150
-  },
-  {
-    title: '生产商',
-    dataIndex: 'id9',
-    width: 150
-  },
-  {
-    title: '管理科室',
-    dataIndex: 'id10',
-    width: 150
-  },
-  {
-    title: '责任人',
-    dataIndex: 'id11',
-    width: 150
-  }
-]
-
 class SearchWrapperForm extends Component {
   constructor(props) {
     super(props);
@@ -101,7 +36,7 @@ class SearchWrapperForm extends Component {
   handleSearch = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log('Received values of form: ', values);
+      this.props.onSearch(values);
     });
   }
   render () {
@@ -115,63 +50,77 @@ class SearchWrapperForm extends Component {
         <Row gutter={24} style={{padding: 5}}>
           <Col span={8} key={1} >
             <FormItem label={`资产编号`}>
-              {getFieldDecorator(`a`)(
+              {getFieldDecorator(`assetsRecord`)(
                 <Input placeholder="资产编号"/>
               )}
             </FormItem>
           </Col>
           <Col span={8} key={2} >
             <FormItem label={`资产名称`}>
-              {getFieldDecorator(`Field2`)(
+              {getFieldDecorator(`equipmetStandarName`)(
                 <Input placeholder="资产名称" />
               )}
             </FormItem>
           </Col>
           <Col span={8} key={3} >
             <FormItem label={`状态`}>
-              {getFieldDecorator(`Field3`)(
-                <Input placeholder="状态" />
+              {getFieldDecorator(`useFstate`, {
+                initialValue: ''
+              })(
+                <Select style={{ width: 170 }}>
+                  <Option value="">全部</Option>
+                  {
+                    createOptions(ArchivesStatus)
+                  }
+                </Select>
               )}
             </FormItem>
           </Col>
           <Col span={8} key={4} style={{ display: !isOpen ? 'none' : 'block' }}>
             <FormItem label={`设备分类`}>
-              {getFieldDecorator(`Field4`)(
-                <Input placeholder="设备分类" />
+              {getFieldDecorator(`productType`, {
+                initialValue: ''
+              })(
+                <Select style={{ width: 170 }}>
+                  <Option value="">全部</Option>
+                  {
+                    createOptions(ProductType)
+                  }
+                </Select>
               )}
             </FormItem>
           </Col>
           <Col span={8} key={5} style={{ display: !isOpen ? 'none' : 'block' }}>
             <FormItem label={`设备型号`}>
-              {getFieldDecorator(`Field5`)(
+              {getFieldDecorator(`spec`)(
                 <Input placeholder="设备型号" />
               )}
             </FormItem>
           </Col>
           <Col span={8} key={6} style={{ display: !isOpen ? 'none' : 'block' }}>
             <FormItem label={`厂商`}>
-              {getFieldDecorator(`Field6`)(
+              {getFieldDecorator(`product`)(
                 <Input placeholder="厂商" />
               )}
             </FormItem>
           </Col>
           <Col span={8} key={7} style={{ display: !isOpen ? 'none' : 'block' }}>
             <FormItem label={`使用科室`}>
-              {getFieldDecorator(`Field7`)(
+              {getFieldDecorator(`useDeptCode`)(
                 <Input placeholder="使用科室" />
               )}
             </FormItem>
           </Col>
           <Col span={8} key={8} style={{ display: !isOpen ? 'none' : 'block' }}>
             <FormItem label={`管理科室`}>
-              {getFieldDecorator(`Field8`)(
+              {getFieldDecorator(`bDept`)(
                 <Input placeholder="管理科室" />
               )}
             </FormItem>
           </Col>
           <Col span={8} key={9} style={{ display: !isOpen ? 'none' : 'block' }}>
             <FormItem label={`责任人`}>
-              {getFieldDecorator(`Field9`)(
+              {getFieldDecorator(`custodian`)(
                 <Input placeholder="责任人" />
               )}
             </FormItem>
@@ -195,32 +144,164 @@ class SearchWrapperForm extends Component {
 const SearchWrapper = Form.create()(SearchWrapperForm);
 
 class Archives extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      certificate: {},
+      certGuid: ''
+    }
+  }
+  onSearch = (params) => {
+    this.refs.remote.fetch(params);
+  }
+  okHanlder = () => {
+    fetchData({
+      url: api.CHANGE_ARCHIVES,
+      success: data => {
+        console.log(data);
+        if (data.status) {
+          this.setState({
+            visible: false
+          })
+        }
+      }
+    })
+  }
   render () {
+    const columns = [
+      {
+        title: '操作',
+        dataIndex: 'RN',
+        width: 250,
+        render: (text, record) => 
+          <span>
+            <Link to={{pathname: `/archives/detail`, state: { record }}}><Icon type="form" />详情</Link>
+            <Divider type="vertical" />
+            <a onClick={() => {
+              if (record.certGuid) {
+                fetchData({
+                  url: api.ARCHIVES_SEARCH,
+                  body: {specCertGuid: record.certGuid},
+                  success: data => {
+                    if (data.status) {
+                      this.setState({
+                        visible: false,
+                        certificate: data.result
+                      })
+                    }
+                  }
+                })
+              } else {
+                this.setState({visible: true, certificate: {}})
+              }
+            }}><Icon type="idcard" />证件</a>
+            <Divider type="vertical" />
+            <a onClick={() => alert('大妈')}><Icon type="qrcode" />打码</a>
+          </span>  
+      },
+      {
+        title: '资产编号',
+        dataIndex: 'assetsRecord',
+        width: 200
+      },
+      {
+        title: '资产名称',
+        dataIndex: 'equipmetStandarName',
+        width: 200
+      },
+      {
+        title: '型号',
+        dataIndex: 'spec',
+        width: 200
+      },
+      {
+        title: '状态',
+        dataIndex: 'useFstate',
+        width: 150,
+        render: text => ArchivesStatus[text]
+      },
+      {
+        title: '设备分类',
+        dataIndex: 'productType',
+        width: 150,
+        render: text => ProductType[text]
+      },
+      {
+        title: '使用科室',
+        dataIndex: 'useDeptCode',
+        width: 150
+      },
+      {
+        title: '购置金额',
+        dataIndex: 'buyPrice',
+        width: 150
+      },
+      {
+        title: '生产商',
+        dataIndex: 'product',
+        width: 150
+      },
+      {
+        title: '管理科室',
+        dataIndex: 'bDept',
+        width: 150
+      },
+      {
+        title: '负责人',
+        dataIndex: 'custodian',
+        width: 150
+      }
+    ]
+    const { certificate } = this.state;
     return this.props.children || (
       <Content style={{ margin: '0 16px' }}>
         <Breadcrumb style={{ margin: '16px 0' }}>
           <Breadcrumb.Item>主页</Breadcrumb.Item>
           <Breadcrumb.Item>资产档案</Breadcrumb.Item>
         </Breadcrumb>
+        <Modal
+          className='ysynet-archives-modal'
+          title="变更证件"
+          style={{ top: 5 }}
+          visible={this.state.visible}
+          onCancel={() => this.setState({visible: false})}
+          okText='保存'
+          cancelText='取消'
+          onOk={this.okHanlder}
+        > 
+          <RemoteSelect 
+            allowClear={true} 
+            url={api.ARCHIVES_SEARCH} 
+            cb={value => {
+              console.log(value)
+              this.setState({certGuid: ''})
+            }} 
+            placeholder='请输入查询条件'
+            style={{width: '500px', marginBottom: 10}}
+          />
+          <Certificates certificate={certificate} />
+        </Modal>
         <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
-          <SearchWrapper/>
-          <Table 
+          <SearchWrapper onSearch={this.onSearch}/>
+          <RemoteTable
+            ref='remote'
+            url={api.ARCHIVES}
+            scroll={{x: '1800px'}}
+            columns={columns}
+            rowKey={'assetsRecord'}
+            style={{marginTop: 10}}
+          /> 
+          {/* <Table 
             bordered={true}
             style={{marginTop: 10}}
             scroll={{x: '1800px'}}
             columns={columns} 
             dataSource={ArchivesData} 
             rowKey={'id'}
-          />
+          /> */}
         </div>
       </Content>
-        /* <RemoteTable
-          ref='remote'
-          url={api.ARCHIVES}
-          scroll={{x: '1800px'}}
-          columns={columns}
-          rowKey={'orgId'}
-        /> */
     )
   }
 }
